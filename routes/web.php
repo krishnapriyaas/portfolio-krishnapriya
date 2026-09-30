@@ -1,21 +1,27 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
-Route::get('/', [PageController::class, 'home'])->name('home');
-Route::get('/about', [PageController::class, 'about'])->name('about');
-Route::get('/skills', [PageController::class, 'skills'])->name('skills');
-Route::get('/experience', [PageController::class, 'experience'])->name('experience');
-Route::get('/projects', [PageController::class, 'projects'])->name('projects');
-Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::view('/', 'home')
+    ->name('home');
+
+Route::view(
+    '/projects/crm-lead-automation',
+    'projects.crm'
+)->name('projects.crm');
+
+Route::view(
+    '/projects/laravel-crm-api',
+    'projects.laravel-crm'
+)->name('projects.laravel-crm');
+
+Route::view(
+    '/projects/ev-charging-api',
+    'projects.ev-charging'
+)->name('projects.ev-charging');
+
+Route::post(
+    '/contact',
+    [ContactController::class, 'store']
+)->name('contact.store');

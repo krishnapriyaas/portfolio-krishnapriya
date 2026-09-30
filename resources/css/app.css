@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    @apply bg-slate-950 text-slate-200 antialiased;
+}
+
+.container-custom {
+    @apply mx-auto max-w-7xl px-6 lg:px-8;
+}
+
+.section {
+    @apply py-20 lg:py-28;
+}
+
+.section-label {
+    @apply mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-blue-400;
+}
+
+.section-title {
+    @apply mb-8 text-3xl font-bold tracking-tight text-white md:text-4xl;
+}
+
+.tag {
+    @apply inline-flex rounded-full border border-slate-700 bg-slate-900
+    px-3 py-1 text-xs font-medium text-slate-300;
+}
