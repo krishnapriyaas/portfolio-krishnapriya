@@ -12,12 +12,12 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     && docker-php-ext-install \
-    pdo \
-    pdo_mysql \
-    mbstring \
-    zip \
-    exif \
-    pcntl \
+       pdo \
+       pdo_mysql \
+       mbstring \
+       zip \
+       exif \
+       pcntl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
@@ -35,31 +35,38 @@ RUN curl -fsSL \
 # Application directory
 WORKDIR /app
 
-# Copy Laravel files
+# Copy project files
 COPY . .
 
-# Install PHP dependencies
+# Remove leftover Vite development server file
+RUN rm -f public/hot
+
+# Install Laravel dependencies
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction
 
-# Install Node dependencies
+# Install frontend dependencies
 RUN npm ci
 
 # Build Tailwind CSS and JavaScript
 RUN npm run build
 
-# Verify production assets exist
+# Verify the Vite production manifest
 RUN test -f public/build/manifest.json
 
-# Create writable Laravel directories
-RUN mkdir -p storage/logs \
-    bootstrap/cache \
-    && chmod -R ug+rwX \
-    storage bootstrap/cache
+# Clear Laravel cached configuration and views
+RUN php artisan config:clear \
+    && php artisan route:clear \
+    && php artisan view:clear
 
-# Render service port
+# Laravel writable directories
+RUN mkdir -p storage/logs bootstrap/cache \
+    && chmod -R ug+rwX \
+       storage bootstrap/cache
+
+# Render port
 EXPOSE 10000
 
 # Start Laravel
