@@ -1,6 +1,7 @@
+
 FROM php:8.2-cli
 
-# Install system dependencies
+# Install PHP and system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -10,32 +11,58 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl
+    && docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    mbstring \
+    zip \
+    exif \
+    pcntl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 \
+    /usr/bin/composer /usr/bin/composer
 
 # Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+RUN curl -fsSL \
+    https://deb.nodesource.com/setup_20.x \
+    | bash - \
+    && apt-get update \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
 
+# Application directory
 WORKDIR /app
 
-# Copy project files
+# Copy Laravel files
 COPY . .
 
-# Install Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install PHP dependencies
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
 
-# Install frontend dependencies and build assets
-RUN npm install
+# Install Node dependencies
+RUN npm ci
+
+# Build Tailwind CSS and JavaScript
 RUN npm run build
 
-# Laravel cache clear
-RUN php artisan config:clear
-RUN php artisan route:clear
-RUN php artisan view:clear
+# Verify production assets exist
+RUN test -f public/build/manifest.json
 
-EXPOSE 8080
+# Create writable Laravel directories
+RUN mkdir -p storage/logs \
+    bootstrap/cache \
+    && chmod -R ug+rwX \
+    storage bootstrap/cache
 
-CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+# Render service port
+EXPOSE 10000
+
+# Start Laravel
+CMD php artisan serve \
+    --host=0.0.0.0 \
+    --port=${PORT:-10000}
