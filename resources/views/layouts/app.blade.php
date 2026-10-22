@@ -35,7 +35,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
 
-    @vite('resources/js/app.js')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
 
@@ -130,21 +130,20 @@
 
         <div class="flex gap-5">
 
-            <a href="https://github.com/YOUR-GITHUB"
-               target="_blank"
-               class="hover:text-white">
+            
+            <a href="https://github.com/krishnapriyaas"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-white">
+                    GitHub
+                </a>
 
-                GitHub
-
-            </a>
-
-            <a href="https://www.linkedin.com/in/YOUR-LINKEDIN"
-               target="_blank"
-               class="hover:text-white">
-
-                LinkedIn
-
-            </a>
+                <a href="https://www.linkedin.com/in/krishna-priya-anambalam-subran-a20472148/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-white">
+                    LinkedIn
+                </a>
 
         </div>
 
